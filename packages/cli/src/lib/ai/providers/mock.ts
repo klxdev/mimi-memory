@@ -16,7 +16,7 @@ export class MockProvider implements ILLMProvider {
     };
   }
 
-  async embed(text: string): Promise<number[]> {
+  async embed(_text: string): Promise<number[]> {
     // Return random vector of dim 1536
     return Array.from({ length: 1536 }, () => Math.random());
   }

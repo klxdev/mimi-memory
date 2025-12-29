@@ -1,7 +1,6 @@
 import { Command } from 'commander';
 import { Repository } from '../lib/storage/repository';
 import fs from 'fs/promises';
-import path from 'path';
 import { Memory } from '../types';
 
 export const verifyCommand = new Command()
@@ -20,7 +19,7 @@ export const verifyCommand = new Command()
         try {
           await fs.access(filePath, fs.constants.F_OK);
           // console.log(`[OK] ${filePath}`);
-        } catch (error) {
+        } catch (_error) {
           console.warn(`[MISSING] Source file for memory ID ${memory.id}: ${filePath}`);
           missingFilesCount++;
         }

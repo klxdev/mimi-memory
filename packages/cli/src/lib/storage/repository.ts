@@ -1,7 +1,6 @@
 import { getDb } from './db';
 import { Memory, Entity } from '../../types';
 import { MemorySchema, EntitySchema, VECTOR_DIM } from './schema';
-import { v4 as uuidv4 } from 'uuid';
 
 const MEMORY_TABLE = 'memories';
 const ENTITY_TABLE = 'entities';
