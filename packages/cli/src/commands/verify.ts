@@ -1,7 +1,7 @@
 import { Command } from "commander";
-import { Repository } from "../lib/storage/repository";
+import { Repository, setDataDir, Memory } from "@mimi-memory/sdk";
 import fs from "fs/promises";
-import { Memory } from "../types";
+import { getDataDir } from "../config";
 
 export const verifyCommand = new Command()
   .name("verify")
@@ -10,6 +10,7 @@ export const verifyCommand = new Command()
   )
   .action(async () => {
     console.log("Verifying memories...");
+    setDataDir(getDataDir());
     const repository = new Repository();
     const memories: Memory[] = await repository.getAll(-1); // Get all memories
 

@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import chalk from "chalk";
-import { Repository } from "../lib/storage/repository";
+import { Repository, setDataDir } from "@mimi-memory/sdk";
+import { getDataDir } from "../config";
 
 export const listCommand = new Command("list")
   .description("List recent memories")
@@ -8,6 +9,7 @@ export const listCommand = new Command("list")
   .option("--json", "Output as JSON")
   .action(async (options) => {
     try {
+      setDataDir(getDataDir());
       const repo = new Repository();
       const memories = await repo.getAll(parseInt(options.limit));
 
