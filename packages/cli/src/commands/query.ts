@@ -1,8 +1,8 @@
 import { Command } from "commander";
 import ora from "ora";
 import chalk from "chalk";
-import { loadConfig } from "../config";
-import { SearchEngine } from "../lib/search/engine";
+import { loadConfig, getDataDir } from "../config";
+import { SearchEngine, setDataDir } from "@mimi-memory/sdk";
 
 export const queryCommand = new Command("query")
   .description("Search memories")
@@ -15,6 +15,7 @@ export const queryCommand = new Command("query")
     const spinner = ora("Searching...").start();
     try {
       const config = await loadConfig();
+      setDataDir(getDataDir());
       const engine = new SearchEngine(config);
 
       const filters: any = {};

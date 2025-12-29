@@ -1,6 +1,6 @@
 import { Repository } from "../storage/repository";
 import { LLMFactory } from "../ai/factory";
-import { Config } from "../../config/schema";
+import { Config } from "../config/schema";
 
 export interface SearchResult {
   memoryId: string;

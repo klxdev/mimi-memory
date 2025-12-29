@@ -1,5 +1,5 @@
 import { getDb } from "./db";
-import { Memory, Entity } from "../../types";
+import { Memory, Entity } from "../types";
 import { MemorySchema, EntitySchema, VECTOR_DIM } from "./schema";
 
 const MEMORY_TABLE = "memories";

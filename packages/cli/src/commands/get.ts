@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import chalk from "chalk";
-import { Repository } from "../lib/storage/repository";
+import { Repository, setDataDir } from "@mimi-memory/sdk";
+import { getDataDir } from "../config";
 
 export const getCommand = new Command("get")
   .description("Get memory by ID")
@@ -8,6 +9,7 @@ export const getCommand = new Command("get")
   .option("--json", "Output as JSON")
   .action(async (id, options) => {
     try {
+      setDataDir(getDataDir());
       const repo = new Repository();
       const memory = await repo.getById(id);
 

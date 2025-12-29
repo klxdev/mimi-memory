@@ -1,6 +1,6 @@
-import { Config } from "../../config/schema";
+import { Config } from "../config/schema";
 import { LLMFactory } from "../ai/factory";
-import { Memory, Entity, MemoryMetadata } from "../../types";
+import { Memory, Entity, MemoryMetadata } from "../types";
 import { v4 as uuidv4 } from "uuid";
 
 export interface ProcessingResult {

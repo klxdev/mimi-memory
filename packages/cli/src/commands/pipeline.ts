@@ -1,7 +1,6 @@
 import { Command } from "commander";
-import { loadConfig } from "../config";
-import { PipelineEngine } from "../lib/pipeline/engine";
-import { Repository } from "../lib/storage/repository";
+import { loadConfig, getDataDir } from "../config";
+import { PipelineEngine, Repository, setDataDir } from "@mimi-memory/sdk";
 
 export const pipelineCommand = new Command("pipeline")
   .description("Internal command to run the extraction pipeline on a memory")
@@ -12,6 +11,7 @@ export const pipelineCommand = new Command("pipeline")
     );
     try {
       const config = await loadConfig();
+      setDataDir(getDataDir());
       const repo = new Repository();
       const memory = await repo.getById(id);
 

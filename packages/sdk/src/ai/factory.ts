@@ -1,8 +1,8 @@
+import { Config } from "../config/schema";
 import { ILLMProvider } from "./types";
-import { MockProvider } from "./providers/mock";
-import { LocalProvider } from "./providers/local";
 import { GoogleProvider } from "./providers/google";
-import { Config } from "../../config/schema";
+import { LocalProvider } from "./providers/local";
+import { MockProvider } from "./providers/mock";
 
 export class LLMFactory {
   private providers: Map<string, ILLMProvider> = new Map();

@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import { Config, ConfigSchema } from "./schema";
+import { Config, ConfigSchema } from "@mimi-memory/sdk";
 import { getConfigPath, getDataDir } from "../lib/utils/paths";
 
 export class ConfigNotFoundError extends Error {

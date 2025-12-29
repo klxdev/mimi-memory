@@ -4,9 +4,8 @@ import ora from "ora";
 import chalk from "chalk";
 import path from "path";
 import { spawn } from "child_process";
-import { loadConfig } from "../config";
-import { PipelineEngine } from "../lib/pipeline/engine";
-import { Repository } from "../lib/storage/repository";
+import { loadConfig, getDataDir } from "../config";
+import { PipelineEngine, Repository, setDataDir } from "@mimi-memory/sdk";
 
 export const addCommand = new Command("add")
   .description("Add a new memory")
@@ -20,6 +19,7 @@ export const addCommand = new Command("add")
     try {
       // 1. Load Config
       const config = await loadConfig();
+      setDataDir(getDataDir());
 
       // 2. Resolve Input
       let inputContent = text || "";
