@@ -7,6 +7,7 @@ import { getCommand } from './commands/get';
 import { deleteCommand } from './commands/delete';
 import { instructionCommand } from './commands/instruction';
 import { verifyCommand } from './commands/verify';
+import { pipelineCommand } from './commands/pipeline';
 
 const program = new Command();
 
@@ -22,5 +23,6 @@ program.addCommand(getCommand);
 program.addCommand(deleteCommand);
 program.addCommand(instructionCommand);
 program.addCommand(verifyCommand);
+program.addCommand(pipelineCommand);
 
 program.parse(process.argv);

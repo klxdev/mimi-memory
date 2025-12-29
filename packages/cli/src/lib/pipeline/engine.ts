@@ -21,12 +21,8 @@ export class PipelineEngine {
     this.llmFactory = new LLMFactory(config);
   }
 
-  async process(input: string, metadata: MemoryMetadata = {}): Promise<ProcessingResult> {
-    const memories: Memory[] = [];
-    const entities: Entity[] = [];
+  async createRawMemory(input: string, metadata: MemoryMetadata = {}): Promise<Memory> {
     const createdAt = new Date().toISOString();
-
-    // 1. Raw Memory
     const rawMemory: Memory = {
       id: uuidv4(),
       content: input,
@@ -41,16 +37,20 @@ export class PipelineEngine {
     const embedder = this.llmFactory.getProvider(embedderName);
     
     rawMemory.vector = await embedder.embed(input);
-    memories.push(rawMemory);
+    return rawMemory;
+  }
 
-    // 2. Mandatory Entity Extraction
-    // Use the first configured provider for text generation if available (skipping 'local' for generation)
+  async extractEntities(memory: Memory): Promise<Entity[]> {
+    const entities: Entity[] = [];
+    const embedderName = this.config.providers['local'] ? 'local' : (Object.keys(this.config.providers)[0] || 'default');
+    const embedder = this.llmFactory.getProvider(embedderName);
+    
     const extractionProviderName = Object.keys(this.config.providers).find(k => k !== 'local') || embedderName;
     const extractionProvider = this.llmFactory.getProvider(extractionProviderName);
     
     try {
         const response = await extractionProvider.generate({
-            prompt: ENTITY_EXTRACTION_PROMPT + input
+            prompt: ENTITY_EXTRACTION_PROMPT + memory.content
         });
         
         // Naive JSON parsing
@@ -67,14 +67,20 @@ export class PipelineEngine {
                 // ALWAYS use the consistent embedder for vectors
                 entity.vector = await embedder.embed(`${re.name}: ${re.type} - ${re.description}`);
                 entities.push(entity);
-                rawMemory.entityIds.push(entity.id);
             }
         }
     } catch (e) {
         console.error("Failed to extract entities:", e);
     }
+    return entities;
+  }
 
-    // 3. Configured Pipeline Steps
+  async runPipelineSteps(memory: Memory): Promise<Memory[]> {
+    const memories: Memory[] = [];
+    const createdAt = new Date().toISOString();
+    const embedderName = this.config.providers['local'] ? 'local' : (Object.keys(this.config.providers)[0] || 'default');
+    const embedder = this.llmFactory.getProvider(embedderName);
+
     if (this.config.pipeline) {
         for (const stepKey in this.config.pipeline) {
             const stepConfig = this.config.pipeline[stepKey];
@@ -83,7 +89,7 @@ export class PipelineEngine {
             try {
                 const provider = this.llmFactory.getProvider(stepConfig.provider);
                 const response = await provider.generate({
-                    prompt: `${stepConfig.prompt}\n\nInput Text:\n${input}`
+                    prompt: `${stepConfig.prompt}\n\nInput Text:\n${memory.content}`
                 });
 
                 const stepMemory: Memory = {
@@ -91,7 +97,7 @@ export class PipelineEngine {
                     content: response.text,
                     type: stepKey as any,
                     createdAt,
-                    metadata: { ...metadata, sourceStep: stepKey },
+                    metadata: { ...memory.metadata, sourceStep: stepKey },
                     entityIds: []
                 };
                 // ALWAYS use the consistent embedder for vectors
@@ -102,7 +108,18 @@ export class PipelineEngine {
             }
         }
     }
+    return memories;
+  }
 
-    return { memories, entities };
+  async process(input: string, metadata: MemoryMetadata = {}): Promise<ProcessingResult> {
+    const rawMemory = await this.createRawMemory(input, metadata);
+    const entities = await this.extractEntities(rawMemory);
+    rawMemory.entityIds = entities.map(e => e.id);
+    const additionalMemories = await this.runPipelineSteps(rawMemory);
+    
+    return {
+      memories: [rawMemory, ...additionalMemories],
+      entities
+    };
   }
 }

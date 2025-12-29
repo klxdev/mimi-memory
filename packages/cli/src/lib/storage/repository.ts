@@ -101,4 +101,21 @@ export class Repository {
     await table.delete(`id = '${id}'`);
     return true;
   }
+
+  async updateMemory(id: string, updates: Partial<Memory>): Promise<void> {
+    const db = await getDb();
+    const tableNames = await db.tableNames();
+    if (!tableNames.includes(MEMORY_TABLE)) return;
+
+    const table = await db.openTable(MEMORY_TABLE);
+    
+    // We need to handle metadata conversion to JSON string if it exists in updates
+    const formattedUpdates: any = { ...updates };
+    if (updates.metadata) {
+      formattedUpdates.metadata = JSON.stringify(updates.metadata);
+    }
+
+    // LanceDB update expects a SQL-like where clause and an object with updates
+    await table.update(formattedUpdates, { where: `id = '${id}'` });
+  }
 }
