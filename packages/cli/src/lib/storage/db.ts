@@ -1,6 +1,6 @@
-import * as lancedb from '@lancedb/lancedb';
-import fs from 'fs-extra';
-import { getDataDir } from '../utils/paths';
+import * as lancedb from "@lancedb/lancedb";
+import fs from "fs-extra";
+import { getDataDir } from "../utils/paths";
 
 let dbInstance: lancedb.Connection | null = null;
 
@@ -18,7 +18,7 @@ export async function ensureTables() {
   const db = await getDb();
   const tableNames = await db.tableNames();
 
-  // We don't create tables here explicitly because LanceDB creates them 
+  // We don't create tables here explicitly because LanceDB creates them
   // on the first write with schema, or we can create empty ones.
   // We'll leave creation to the Repository layer when it first tries to write,
   // or explicit creation methods if preferred.

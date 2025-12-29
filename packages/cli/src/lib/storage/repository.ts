@@ -1,9 +1,9 @@
-import { getDb } from './db';
-import { Memory, Entity } from '../../types';
-import { MemorySchema, EntitySchema, VECTOR_DIM } from './schema';
+import { getDb } from "./db";
+import { Memory, Entity } from "../../types";
+import { MemorySchema, EntitySchema, VECTOR_DIM } from "./schema";
 
-const MEMORY_TABLE = 'memories';
-const ENTITY_TABLE = 'entities';
+const MEMORY_TABLE = "memories";
+const ENTITY_TABLE = "entities";
 
 export class Repository {
   async saveBatch(memories: Memory[], entities: Entity[]) {
@@ -11,20 +11,22 @@ export class Repository {
 
     // 1. Save Memories
     if (memories.length > 0) {
-      const memoryData = memories.map(m => ({
+      const memoryData = memories.map((m) => ({
         id: m.id,
         content: m.content,
         type: m.type,
         vector: (m as any).vector || new Array(VECTOR_DIM).fill(0), // Placeholder if vector missing
         metadata: JSON.stringify(m.metadata),
         created_at: new Date(m.createdAt).getTime(),
-        entityIds: m.entityIds
+        entityIds: m.entityIds,
       }));
 
       // Check if table exists, if not create, else add
       const tableNames = await db.tableNames();
       if (!tableNames.includes(MEMORY_TABLE)) {
-        await db.createTable(MEMORY_TABLE, memoryData, { schema: MemorySchema });
+        await db.createTable(MEMORY_TABLE, memoryData, {
+          schema: MemorySchema,
+        });
       } else {
         const table = await db.openTable(MEMORY_TABLE);
         await table.add(memoryData);
@@ -33,17 +35,19 @@ export class Repository {
 
     // 2. Save Entities
     if (entities.length > 0) {
-      const entityData = entities.map(e => ({
+      const entityData = entities.map((e) => ({
         id: e.id,
         name: e.name,
         type: e.type,
-        description: e.description || '',
-        vector: (e as any).vector || new Array(VECTOR_DIM).fill(0)
+        description: e.description || "",
+        vector: (e as any).vector || new Array(VECTOR_DIM).fill(0),
       }));
 
       const tableNames = await db.tableNames();
       if (!tableNames.includes(ENTITY_TABLE)) {
-        await db.createTable(ENTITY_TABLE, entityData, { schema: EntitySchema });
+        await db.createTable(ENTITY_TABLE, entityData, {
+          schema: EntitySchema,
+        });
       } else {
         const table = await db.openTable(ENTITY_TABLE);
         // Basic deduplication could happen here, for now we append
@@ -53,19 +57,23 @@ export class Repository {
     }
   }
 
-  async searchMemories(vector: number[], filter?: string, limit = 10): Promise<any[]> {
+  async searchMemories(
+    vector: number[],
+    filter?: string,
+    limit = 10,
+  ): Promise<any[]> {
     const db = await getDb();
     const tableNames = await db.tableNames();
     if (!tableNames.includes(MEMORY_TABLE)) return [];
 
     const table = await db.openTable(MEMORY_TABLE);
     let query = table.search(vector).limit(limit);
-    
+
     // Note: LanceDB filter syntax is SQL-like.
     // We'd need to parse our metadata filter into SQL if provided.
     // For now, simple vector search.
     if (filter) {
-        query = query.where(filter);
+      query = query.where(filter);
     }
 
     return await query.toArray();
@@ -87,7 +95,11 @@ export class Repository {
     if (!tableNames.includes(MEMORY_TABLE)) return null;
 
     const table = await db.openTable(MEMORY_TABLE);
-    const results = await table.query().where(`id = '${id}'`).limit(1).toArray();
+    const results = await table
+      .query()
+      .where(`id = '${id}'`)
+      .limit(1)
+      .toArray();
     return results.length > 0 ? results[0] : null;
   }
 
@@ -107,7 +119,7 @@ export class Repository {
     if (!tableNames.includes(MEMORY_TABLE)) return;
 
     const table = await db.openTable(MEMORY_TABLE);
-    
+
     // We need to handle metadata conversion to JSON string if it exists in updates
     const formattedUpdates: any = { ...updates };
     if (updates.metadata) {

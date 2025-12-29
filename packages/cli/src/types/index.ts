@@ -1,4 +1,4 @@
-export type MemoryType = 'raw' | 'episodic' | 'semantic' | 'procedural';
+export type MemoryType = "raw" | "episodic" | "semantic" | "procedural";
 
 export interface MemoryMetadata {
   projectId?: string;
