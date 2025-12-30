@@ -1,9 +1,9 @@
 import { Command } from "commander";
 
 const AGENT_INSTRUCTION = [
-  "# Mimi Memory: AI Agent Operational Protocol",
+  "# **CRITICAL** Required Agent Memory Protocol",
   "",
-  "Mimi is the short and long-term memory system for this environment. To ensure operational consistency and context awareness, agents are **required** to use the `mimi` CLI to retrieve and store information for every task.",
+  "Mimi is the short and long-term memory system for this environment. You **MUST** use the `mimi` CLI to retrieve and store memories for every task.",
   "",
   "## 1. Required: Pre-Task Retrieval",
   "Before beginning any task, you must query Mimi to retrieve relevant context, past decisions, and user preferences. This step is mandatory to avoid redundant questions and conflicting actions.",
