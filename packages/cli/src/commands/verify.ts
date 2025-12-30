@@ -22,7 +22,7 @@ export const verifyCommand = new Command()
         try {
           await fs.access(filePath, fs.constants.F_OK);
           // console.log(`[OK] ${filePath}`);
-        } catch (_error) {
+        } catch {
           console.warn(
             `[MISSING] Source file for memory ID ${memory.id}: ${filePath}`,
           );
