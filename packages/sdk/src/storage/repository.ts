@@ -120,13 +120,19 @@ export class Repository {
 
     const table = await db.openTable(MEMORY_TABLE);
 
-    // We need to handle metadata conversion to JSON string if it exists in updates
-    const formattedUpdates: any = { ...updates };
-    if (updates.metadata) {
+    const formattedUpdates: any = {};
+    if (updates.content !== undefined) formattedUpdates.content = updates.content;
+    if (updates.type !== undefined) formattedUpdates.type = updates.type;
+    if (updates.metadata !== undefined) {
       formattedUpdates.metadata = JSON.stringify(updates.metadata);
+    }
+    if (updates.entityIds !== undefined) {
+      formattedUpdates.entityIds = updates.entityIds;
     }
 
     // LanceDB update expects a SQL-like where clause and an object with updates
+    // If the error persists, it might be a limitation of the current Node SDK version
+    // for List types in the 'update' method.
     await table.update(formattedUpdates, { where: `id = '${id}'` });
   }
 }
