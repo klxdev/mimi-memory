@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import chalk from "chalk";
-import { Repository, setDataDir } from "@mimi-memory/sdk";
+import { Repository, setDataDir } from "@ai-dev-labs/mimi-sdk";
 import { getDataDir } from "../config";
 
 export const listCommand = new Command("list")

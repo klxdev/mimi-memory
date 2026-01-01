@@ -5,7 +5,7 @@ import chalk from "chalk";
 import path from "path";
 import { spawn } from "child_process";
 import { loadConfig, getDataDir } from "../config";
-import { PipelineEngine, Repository, setDataDir } from "@mimi-memory/sdk";
+import { PipelineEngine, Repository, setDataDir } from "@ai-dev-labs/mimi-sdk";
 
 export const addCommand = new Command("add")
   .description("Add a new memory")

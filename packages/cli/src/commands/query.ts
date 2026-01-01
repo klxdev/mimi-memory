@@ -2,7 +2,7 @@ import { Command } from "commander";
 import ora from "ora";
 import chalk from "chalk";
 import { loadConfig, getDataDir } from "../config";
-import { SearchEngine, setDataDir } from "@mimi-memory/sdk";
+import { SearchEngine, setDataDir } from "@ai-dev-labs/mimi-sdk";
 
 export const queryCommand = new Command("query")
   .description("Search memories")

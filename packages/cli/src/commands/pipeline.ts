@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { loadConfig, getDataDir } from "../config";
-import { PipelineEngine, Repository, setDataDir } from "@mimi-memory/sdk";
+import { PipelineEngine, Repository, setDataDir } from "@ai-dev-labs/mimi-sdk";
 
 export const pipelineCommand = new Command("pipeline")
   .description("Internal command to run the extraction pipeline on a memory")

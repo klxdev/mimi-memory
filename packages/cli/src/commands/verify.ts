@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { Repository, setDataDir, Memory } from "@mimi-memory/sdk";
+import { Repository, setDataDir, Memory } from "@ai-dev-labs/mimi-sdk";
 import fs from "fs/promises";
 import { getDataDir } from "../config";
 

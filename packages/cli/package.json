@@ -1,11 +1,14 @@
 {
-  "name": "@mimi-memory/cli",
+  "name": "@ai-dev-labs/mimi",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
     "mimi": "./dist/index.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -18,6 +21,6 @@
     "vitest": "^2.1.8"
   },
   "dependencies": {
-    "@mimi-memory/sdk": "*"
+    "@ai-dev-labs/mimi-sdk": "*"
   }
 }
