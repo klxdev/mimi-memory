@@ -12,7 +12,7 @@ function getGitRepoName(): string | null {
       stdio: ["ignore", "pipe", "ignore"],
     }).trim();
     return path.basename(gitRoot);
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -40,8 +40,7 @@ export const initCommand = new Command("init")
         chalk.green(`Initialized mimi project: ${chalk.bold(projectName)}`),
       );
       console.log(chalk.gray(`Created mimi.toml at ${configPath}`));
-    } catch (error) {
+    } catch {
       spinner.fail(chalk.red("Failed to initialize mimi project."));
-      console.error(error);
     }
   });

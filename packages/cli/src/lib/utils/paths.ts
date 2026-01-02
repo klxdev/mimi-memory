@@ -18,7 +18,9 @@ export function getDataDir(): string {
   return DATA_DIR;
 }
 
-export function findProjectConfig(startDir: string = process.cwd()): string | null {
+export function findProjectConfig(
+  startDir: string = process.cwd(),
+): string | null {
   let currentDir = startDir;
   while (currentDir !== path.parse(currentDir).root) {
     const configPath = path.join(currentDir, "mimi.toml");
@@ -42,7 +44,7 @@ export function getProjectMetadata(): { project?: string } {
     if (projectMatch) {
       return { project: projectMatch[1] };
     }
-  } catch (error) {
+  } catch {
     // Ignore errors reading config
   }
   return {};
