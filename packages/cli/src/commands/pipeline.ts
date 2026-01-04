@@ -24,11 +24,6 @@ export const pipelineCommand = new Command("pipeline")
         `[${new Date().toISOString()}] Memory loaded: ${memory.content.slice(0, 50)}...`,
       );
 
-      // Convert from DB format if necessary
-      if (typeof memory.metadata === "string") {
-        memory.metadata = JSON.parse(memory.metadata);
-      }
-
       const engine = new PipelineEngine(config);
 
       // 1. Extract Entities

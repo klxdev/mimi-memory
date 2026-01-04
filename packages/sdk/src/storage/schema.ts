@@ -5,7 +5,6 @@ import {
   FixedSizeList,
   Float32,
   TimestampMillisecond,
-  List,
 } from "apache-arrow";
 
 // Dimension for embeddings.
@@ -24,8 +23,8 @@ export const MemorySchema = new Schema([
   // Metadata stored as JSON string because strict Arrow structs can be rigid for "arbitrary" flags
   new Field("metadata", new Utf8()),
   new Field("created_at", new TimestampMillisecond()),
-  // List of associated Entity IDs
-  new Field("entityIds", new List(new Field("item", new Utf8()))),
+  // List of associated Entity IDs stored as JSON string for compatibility with update operations
+  new Field("entityIds", new Utf8()),
 ]);
 
 export const EntitySchema = new Schema([

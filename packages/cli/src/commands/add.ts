@@ -74,7 +74,7 @@ export const addCommand = new Command("add")
         // 5. Spawn background process
         // We use process.argv[0] (node) and process.argv[1] (the script entry point)
         // to call the 'pipeline' command we just added.
-        const logFile = path.join(process.cwd(), "logs", "pipeline.log");
+        const logFile = path.join(process.cwd(), ".mimi", "logs", "pipeline.log");
         await fs.ensureDir(path.dirname(logFile));
         const out = fs.openSync(logFile, "a");
         const err = fs.openSync(logFile, "a");
