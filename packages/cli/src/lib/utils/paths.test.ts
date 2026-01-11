@@ -1,8 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { getMimiDir, getConfigPath, getDataDir, getLogsDir, findProjectConfig } from "./paths";
 import path from "path";
 import os from "os";
-import fs from "fs-extra";
 
 describe("paths utility", () => {
   it("should return correct mimi dir", () => {

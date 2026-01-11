@@ -1,6 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { PipelineEngine } from "./engine";
-import { MockProvider } from "../ai/providers/mock";
 
 describe("PipelineEngine", () => {
   const config: any = {

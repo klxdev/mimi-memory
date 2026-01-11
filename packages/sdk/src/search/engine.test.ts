@@ -1,7 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { SearchEngine } from "./engine";
-import { Repository } from "../storage/repository";
-import { LLMFactory } from "../ai/factory";
 
 vi.mock("../storage/repository", () => ({
   Repository: vi.fn().mockImplementation(() => ({

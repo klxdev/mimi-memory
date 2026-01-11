@@ -34,8 +34,8 @@ describe("db utility", () => {
 
   it("should reuse db instance for same dir", async () => {
     setDataDir("/tmp/mimi-data");
-    const db1 = await getDb();
-    const db2 = await getDb();
+    await getDb();
+    await getDb();
     // In our mock, connect is called only once because of the singleton pattern in db.ts
     expect(lancedb.connect).toHaveBeenCalledTimes(1);
   });
