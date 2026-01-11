@@ -5,6 +5,7 @@ import fs from "fs-extra";
 export const MIMI_DIR = path.join(os.homedir(), ".mimi");
 export const CONFIG_FILE = path.join(MIMI_DIR, "settings.json");
 export const DATA_DIR = path.join(MIMI_DIR, "data");
+export const LOGS_DIR = path.join(MIMI_DIR, "logs");
 
 export function getMimiDir(): string {
   return MIMI_DIR;
@@ -16,6 +17,10 @@ export function getConfigPath(): string {
 
 export function getDataDir(): string {
   return DATA_DIR;
+}
+
+export function getLogsDir(): string {
+  return LOGS_DIR;
 }
 
 export function findProjectConfig(

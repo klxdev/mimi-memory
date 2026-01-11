@@ -1,12 +1,16 @@
 import { ILLMProvider, LLMRequest, LLMResponse } from "../types";
 import { pipeline, FeatureExtractionPipeline } from "@xenova/transformers";
 
+import { sdkLogger } from "../../logger";
+
 class LocalModelManager {
   private static instance: FeatureExtractionPipeline | null = null;
 
   static async getEmbedder() {
     if (!this.instance) {
-      console.log("Loading local embedding model (Xenova/all-MiniLM-L6-v2)...");
+      sdkLogger.info(
+        "Loading local embedding model (Xenova/all-MiniLM-L6-v2)...",
+      );
       this.instance = await pipeline(
         "feature-extraction",
         "Xenova/all-MiniLM-L6-v2",

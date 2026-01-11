@@ -1,4 +1,5 @@
 import { Command } from "commander";
+import { logger } from "../lib/logger";
 
 const AGENT_INSTRUCTION = [
   "# **CRITICAL** Required Agent Memory Protocol",
@@ -31,8 +32,10 @@ const AGENT_INSTRUCTION = [
   '3. **Store:** `mimi add "result and rationale"` (Mandatory after finishing)',
 ].join("\n");
 
+export const instructionAction = () => {
+  logger.success(AGENT_INSTRUCTION);
+};
+
 export const instructionCommand = new Command("instruction")
   .description("Print the operational protocol for AI Agents using Mimi")
-  .action(() => {
-    console.log(AGENT_INSTRUCTION);
-  });
+  .action(instructionAction);

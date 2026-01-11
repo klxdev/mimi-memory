@@ -6,3 +6,4 @@ export * from "./pipeline/engine";
 export * from "./storage/repository";
 export * from "./storage/db";
 export * from "./search/engine";
+export * from "./logger";

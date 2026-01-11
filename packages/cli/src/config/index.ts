@@ -14,7 +14,7 @@ export class ConfigNotFoundError extends Error {
 export async function loadConfig(): Promise<Config> {
   const configPath = getConfigPath();
   if (!(await fs.pathExists(configPath))) {
-    throw new ConfigNotFoundError(configPath);
+    return ConfigSchema.parse({ providers: {}, pipeline: {} });
   }
 
   const raw = await fs.readJson(configPath);

@@ -18,7 +18,7 @@ export class Repository {
         vector: (m as any).vector || new Array(VECTOR_DIM).fill(0), // Placeholder if vector missing
         metadata: JSON.stringify(m.metadata),
         created_at: new Date(m.createdAt).getTime(),
-        entityIds: m.entityIds,
+        entityIds: JSON.stringify(m.entityIds || []),
       }));
 
       // Check if table exists, if not create, else add
@@ -76,7 +76,13 @@ export class Repository {
       query = query.where(filter);
     }
 
-    return await query.toArray();
+    const results = await query.toArray();
+    return results.map((m) => {
+      if (typeof m.metadata === "string") m.metadata = JSON.parse(m.metadata);
+      if (typeof m.entityIds === "string")
+        m.entityIds = JSON.parse(m.entityIds);
+      return m;
+    });
   }
 
   async getAll(limit = 20): Promise<any[]> {
@@ -86,7 +92,13 @@ export class Repository {
 
     const table = await db.openTable(MEMORY_TABLE);
     // Return most recent first
-    return await table.query().limit(limit).toArray();
+    const results = await table.query().limit(limit).toArray();
+    return results.map((m) => {
+      if (typeof m.metadata === "string") m.metadata = JSON.parse(m.metadata);
+      if (typeof m.entityIds === "string")
+        m.entityIds = JSON.parse(m.entityIds);
+      return m;
+    });
   }
 
   async getById(id: string): Promise<any | null> {
@@ -100,7 +112,20 @@ export class Repository {
       .where(`id = '${id}'`)
       .limit(1)
       .toArray();
-    return results.length > 0 ? results[0] : null;
+
+    if (results.length > 0) {
+      const m = results[0];
+      if (typeof m.metadata === "string") m.metadata = JSON.parse(m.metadata);
+      if (typeof m.entityIds === "string") {
+        try {
+          m.entityIds = JSON.parse(m.entityIds);
+        } catch {
+          // Fallback if not valid JSON
+        }
+      }
+      return m;
+    }
+    return null;
   }
 
   async deleteById(id: string): Promise<boolean> {
@@ -122,18 +147,15 @@ export class Repository {
 
     const formattedUpdates: any = {};
     if (updates.content !== undefined)
-      formattedUpdates.content = updates.content;
-    if (updates.type !== undefined) formattedUpdates.type = updates.type;
+      formattedUpdates.content = `'${updates.content.replace(/'/g, "''")}'`;
+    if (updates.type !== undefined) formattedUpdates.type = `'${updates.type}'`;
     if (updates.metadata !== undefined) {
-      formattedUpdates.metadata = JSON.stringify(updates.metadata);
+      formattedUpdates.metadata = `'${JSON.stringify(updates.metadata).replace(/'/g, "''")}'`;
     }
     if (updates.entityIds !== undefined) {
-      formattedUpdates.entityIds = updates.entityIds;
+      formattedUpdates.entityIds = `'${JSON.stringify(updates.entityIds).replace(/'/g, "''")}'`;
     }
 
-    // LanceDB update expects a SQL-like where clause and an object with updates
-    // If the error persists, it might be a limitation of the current Node SDK version
-    // for List types in the 'update' method.
     await table.update(formattedUpdates, { where: `id = '${id}'` });
   }
 }

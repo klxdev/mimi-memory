@@ -17,6 +17,8 @@ export const PipelineStepSchema = z.object({
 export const ConfigSchema = z.object({
   providers: z.record(z.string(), ProviderConfigSchema),
   pipeline: z.record(z.string(), PipelineStepSchema),
+  debug: z.boolean().optional(),
+  logsDir: z.string().optional(),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;

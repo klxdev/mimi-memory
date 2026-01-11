@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { Repository, setDataDir, Memory } from "@ai-dev-labs/mimi-sdk";
 import fs from "fs/promises";
 import { getDataDir } from "../config";
+import { logger } from "../lib/logger";
 
 export const verifyCommand = new Command()
   .name("verify")
@@ -9,7 +10,7 @@ export const verifyCommand = new Command()
     "Verify the existence of source files linked to memories in the database.",
   )
   .action(async () => {
-    console.log("Verifying memories...");
+    logger.log("Verifying memories...");
     setDataDir(getDataDir());
     const repository = new Repository();
     const memories: Memory[] = await repository.getAll(-1); // Get all memories
@@ -21,9 +22,9 @@ export const verifyCommand = new Command()
         const filePath = memory.metadata.sourceFile;
         try {
           await fs.access(filePath, fs.constants.F_OK);
-          // console.log(`[OK] ${filePath}`);
+          // logger.log(`[OK] ${filePath}`);
         } catch {
-          console.warn(
+          logger.warn(
             `[MISSING] Source file for memory ID ${memory.id}: ${filePath}`,
           );
           missingFilesCount++;
@@ -32,9 +33,9 @@ export const verifyCommand = new Command()
     }
 
     if (missingFilesCount === 0) {
-      console.log("All memory source files verified successfully.");
+      logger.log("All memory source files verified successfully.");
     } else {
-      console.warn(
+      logger.warn(
         `Verification complete. Found ${missingFilesCount} missing source file(s).`,
       );
     }

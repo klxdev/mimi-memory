@@ -1,12 +1,13 @@
 import { Command } from "commander";
 import { loadConfig, getDataDir } from "../config";
 import { PipelineEngine, Repository, setDataDir } from "@ai-dev-labs/mimi-sdk";
+import { logger } from "../lib/logger";
 
 export const pipelineCommand = new Command("pipeline")
   .description("Internal command to run the extraction pipeline on a memory")
   .argument("<id>", "Memory ID to process")
   .action(async (id) => {
-    console.log(
+    logger.log(
       `[${new Date().toISOString()}] Starting pipeline for memory ${id}`,
     );
     try {
@@ -20,46 +21,41 @@ export const pipelineCommand = new Command("pipeline")
         process.exit(1);
       }
 
-      console.log(
+      logger.log(
         `[${new Date().toISOString()}] Memory loaded: ${memory.content.slice(0, 50)}...`,
       );
-
-      // Convert from DB format if necessary
-      if (typeof memory.metadata === "string") {
-        memory.metadata = JSON.parse(memory.metadata);
-      }
 
       const engine = new PipelineEngine(config);
 
       // 1. Extract Entities
-      console.log(`[${new Date().toISOString()}] Extracting entities...`);
+      logger.log(`[${new Date().toISOString()}] Extracting entities...`);
       const entities = await engine.extractEntities(memory);
-      console.log(
+      logger.log(
         `[${new Date().toISOString()}] Extracted ${entities.length} entities.`,
       );
 
       // 2. Run Pipeline Steps
-      console.log(
+      logger.log(
         `[${new Date().toISOString()}] Running additional pipeline steps...`,
       );
       const additionalMemories = await engine.runPipelineSteps(memory);
-      console.log(
+      logger.log(
         `[${new Date().toISOString()}] Generated ${additionalMemories.length} additional memories.`,
       );
 
       // 3. Save everything
-      console.log(`[${new Date().toISOString()}] Saving to repository...`);
+      logger.log(`[${new Date().toISOString()}] Saving to repository...`);
       await repo.saveBatch(additionalMemories, entities);
 
       // 4. Update the original memory with entity IDs
       if (entities.length > 0) {
-        console.log(
+        logger.log(
           `[${new Date().toISOString()}] Updating original memory with entity IDs...`,
         );
         const entityIds = entities.map((e) => e.id);
         try {
           await repo.updateMemory(id, { entityIds });
-          console.log(`[${new Date().toISOString()}] Update successful.`);
+          logger.log(`[${new Date().toISOString()}] Update successful.`);
         } catch (updateError: any) {
           console.error(
             `[${new Date().toISOString()}] Failed to update memory with entity IDs: ${updateError.message}`,
@@ -68,7 +64,7 @@ export const pipelineCommand = new Command("pipeline")
         }
       }
 
-      console.log(
+      logger.log(
         `[${new Date().toISOString()}] Pipeline completed for memory ${id}`,
       );
     } catch (error: any) {
