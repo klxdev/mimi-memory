@@ -20,9 +20,9 @@ describe("Search Relevance Functional Test", () => {
       providers: {
         local: {
           type: "local",
-        }
+        },
       },
-      pipeline: {}
+      pipeline: {},
     };
   });
 
@@ -42,7 +42,7 @@ describe("Search Relevance Functional Test", () => {
 
     await repository.saveBatch(
       [...mem1.memories, ...mem2.memories, ...mem3.memories],
-      [...mem1.entities, ...mem2.entities, ...mem3.entities]
+      [...mem1.entities, ...mem2.entities, ...mem3.entities],
     );
 
     // 2. Search for "Tell me about Paris"
@@ -52,14 +52,22 @@ describe("Search Relevance Functional Test", () => {
     // 3. Search with boost
     const firstEntity = mem1.entities[0]?.name;
     if (firstEntity) {
-        const boostedResults = await searchEngine.search("Tell me about Paris", {}, firstEntity);
-        
-        const parisResult = boostedResults.find(r => r.content.includes("Paris"));
-        const pizzaResult = boostedResults.find(r => r.content.includes("Pizza"));
-        
-        if (parisResult && pizzaResult) {
-            expect(parisResult.score).toBeGreaterThan(pizzaResult.score);
-        }
+      const boostedResults = await searchEngine.search(
+        "Tell me about Paris",
+        {},
+        firstEntity,
+      );
+
+      const parisResult = boostedResults.find((r) =>
+        r.content.includes("Paris"),
+      );
+      const pizzaResult = boostedResults.find((r) =>
+        r.content.includes("Pizza"),
+      );
+
+      if (parisResult && pizzaResult) {
+        expect(parisResult.score).toBeGreaterThan(pizzaResult.score);
+      }
     }
   });
 });

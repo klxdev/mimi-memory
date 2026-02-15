@@ -67,7 +67,9 @@ export class Repository {
     if (!tableNames.includes(MEMORY_TABLE)) return [];
 
     const table = await db.openTable(MEMORY_TABLE);
-    let query = (table.search(vector) as any).distanceType("cosine").limit(limit);
+    let query = (table.search(vector) as any)
+      .distanceType("cosine")
+      .limit(limit);
 
     // Note: LanceDB filter syntax is SQL-like.
     // We'd need to parse our metadata filter into SQL if provided.
